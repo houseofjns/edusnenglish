@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House of J&S Computer Training Center - Exam Portal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F3E5AB;
+            --silver: #C0C0C0;
+            --silver-light: #E0E0E0;
+            --dark-bg: #1a1a1a;
+            --panel-bg: #2a2a2a;
+            --text-color: #333;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #333);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            user-select: none; /* Anti-copy */
+        }
+
+        /* Allow text selection in inputs and textareas */
+        input, textarea {
+            user-select: text;
+        }
+
+        /* Login Container */
+        #login-screen {
+            background: var(--silver-light);
+            padding: 40px;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-top: 100px;
+            width: 300px;
+        }
+
+        #login-screen img {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #111;
+            margin-top: 0;
+            font-family: 'Merriweather', serif;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--silver);
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-gold {
+            background: linear-gradient(to bottom, var(--gold-light), var(--gold));
+            color: #111;
+            border: 1px solid #b5952f;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+
+        .btn-gold:hover {
+            transform: scale(1.05);
+        }
+
+        /* Exam Container */
+        #exam-screen {
+            display: none;
+            width: 90%;
+            max-width: 900px;
+            background: var(--silver-light);
+            padding: 40px;
+            border-radius: 10px;
+            margin-top: 30px;
+            margin-bottom: 50px;
+            border-top: 10px solid var(--gold);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--silver);
+            padding-bottom: 20px;
+        }
+
+        .header img {
+            width: 120px;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            background: var(--gold);
+            color: #111;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .question-box {
+            margin-bottom: 25px;
+            background: #fff;
+            padding: 20px;
+            border-left: 5px solid var(--gold);
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-family: 'Merriweather', serif;
+        }
+
+        .passage {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px dashed var(--silver);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--silver);
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+            background: #fafafa;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .blank {
+            display: inline-block;
+            width: 100px;
+            border-bottom: 2px solid #333;
+            margin: 0 5px;
+        }
+
+        /* Result Container */
+        #result-screen {
+            display: none;
+            width: 90%;
+            max-width: 900px;
+            background: var(--silver-light);
+            padding: 40px;
+            border-radius: 10px;
+            margin-top: 30px;
+            margin-bottom: 50px;
+            border-top: 10px solid var(--gold);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .score-board {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #111;
+        }
+
+        .result-item {
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border-left: 5px solid #ccc;
+        }
+
+        .result-item.correct {
+            border-left-color: #28a745;
+            background: #f0fff4;
+        }
+
+        .result-item.incorrect {
+            border-left-color: #dc3545;
+            background: #fff0f0;
+        }
+
+        .result-q {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .result-ans {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .correct-ans {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Screen -->
+    <div id="login-screen">
+        <img src="logo1.png" alt="J&S Logo">
+        <h2>Student Login</h2>
+        <p style="font-size: 12px; color: #666;">House of J&S Computer Training Center</p>
+        
+        <div class="input-group">
+            <label for="studentName">Student Name</label>
+            <input type="text" id="studentName" placeholder="Enter your name">
+        </div>
+        <div class="input-group">
+            <label for="studentPassword">Password</label>
+            <input type="password" id="studentPassword" placeholder="Enter password">
+        </div>
+        <button class="btn-gold" onclick="login()">Login</button>
+        <p id="login-error" style="color: red; font-size: 12px; display: none;">Incorrect Password!</p>
+    </div>
+
+    <!-- Exam Screen -->
+    <div id="exam-screen">
+        <div class="header">
+            <img src="logo1.png" alt="J&S Logo">
+            <h1>Cambridge-style English Language Paper</h1>
+            <h2>Grade 7 - Final Term Examination 2025</h2>
+            <p style="text-align: right; font-weight: bold;" id="display-student-name"></p>
+        </div>
+
+        <form id="exam-form">
+            <!-- Section A: Grammar -->
+            <div class="section-title">Section A: Grammar (Total: 64 Marks)</div>
+
+            <div class="question-box">
+                <div class="question-text">1. Underline the time connectives in the following sentence (Type the word):<br>'After the sun set, we packed our bags and headed home.'</div>
+                <input type="text" id="q1" placeholder="Type the time connective here...">
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">2. Add a suitable prefix to these words to change their meaning:</div>
+                <p>a) kind: <input type="text" id="q2a" style="width: 150px;" placeholder="Type here..."></p>
+                <p>b) behave: <input type="text" id="q2b" style="width: 150px;" placeholder="Type here..."></p>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">3. Identify the connectives in the sentence:<br>'She wanted to go to the park, but it started raining.'</div>
+                <input type="text" id="q3" placeholder="Type the connective here...">
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">4. Insert a colon in the correct place (Rewrite the sentence):<br>'She brought three things a pencil, a notebook, and an eraser.'</div>
+                <input type="text" id="q4" placeholder="Type the full sentence here...">
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">5. Change the voice of the sentence:<br>'The cake was baked by the chef.'</div>
+                <input type="text" id="q5" placeholder="Type the active voice sentence here...">
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">6. Identify the figurative language in this sentence:<br>'The stars danced playfully in the night sky.'</div>
+                <input type="text" id="q6" placeholder="Type the type of figurative language...">
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">7. Write a sentence using an embedded clause.</div>
+                <input type="text" id="q7" placeholder="Write your sentence here...">
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">8. Choose the better word choices (adjective and noun) for this sentence:<br>'The ___ (bright/dim) ___ (light/lamp) filled the room.'</div>
+                <p>Blank 1: <input type="text" id="q8a" style="width: 100px;"></p>
+                <p>Blank 2: <input type="text" id="q8b" style="width: 100px;"></p>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">9. Type the prepositional phrase from the sentence:<br>'The cat sat under the old wooden table.'</div>
+                <input type="text" id="q9" placeholder="Type the prepositional phrase...">
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">10. Write the contextual meaning of the word 'storm' in the sentence:<br>'He stormed out of the room.'</div>
+                <input type="text" id="q10" placeholder="What does 'stormed' mean here?">
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">11. Identify the type of imagery used:<br>'The scent of fresh bread filled the air.'</div>
+                <input type="text" id="q11" placeholder="Type of imagery (e.g., visual, olfactory)...">
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">12. Add suitable suffixes to make new words:</div>
+                <p>a) hope: <input type="text" id="q12a" style="width: 150px;"></p>
+                <p>b) help: <input type="text" id="q12b" style="width: 150px;"></p>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">13. Identify the word class of the underlined word:<br>'He ran quickly to the door.' (quickly)</div>
+                <input type="text" id="q13" placeholder="Word class...">
+            </div>
+
+            <!-- Section C: Reading Comprehension -->
+            <div class="section-title">Section C: Unseen Reading Comprehension (Total: 20 Marks)</div>
+            
+            <div class="passage">
+                <strong>The sun had barely risen</strong> when Mia stepped out of the tent. A chilly breeze swept across the <strong>mountain ridge</strong>, tugging at her jacket. Below, a sea of clouds rolled gently over the valleys, making the peaks look like islands in a white ocean. It was her first time hiking so high, and the sight took her breath away.<br><br>
+                She turned to find her older brother, Leo, already boiling water over a small <strong>camp stove</strong>. "Morning," he said, handing her a steaming mug of cocoa. They sat together in silence, watching the golden light spill across the horizon. It was moments like these that made the difficult climb worthwhile.<br><br>
+                As they packed up their campsite, Mia noticed something shiny in the grass. It was an old <strong>compass</strong>, its glass cracked but the needle still moving. She picked it up and showed it to Leo. "Someone must have lost this years ago," she said.<br><br>
+                Leo examined it with curiosity. "Maybe it belonged to another hiker, or even a ranger," he guessed. "It's kind of cool, actually."<br><br>
+                They decided to keep the compass as a memory of their adventure. As they descended the trail, Mia thought about how nature had a way of reminding people of both the past and the present—of old paths and new beginnings. The climb had been hard, but the journey had taught her more than she ever expected.
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">1. What was the setting of the passage, and how is it described?</div>
+                <textarea id="rc1" placeholder="Write your answer here..."></textarea>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">2. What can we infer about Mia's feelings towards the hike?</div>
+                <textarea id="rc2" placeholder="Write your answer here..."></textarea>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">3. What does the compass symbolize in the story?</div>
+                <textarea id="rc3" placeholder="Write your answer here..."></textarea>
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">4. Find a word from the passage that means 'view from a high place'.</div>
+                <input type="text" id="rc4" placeholder="Type the word here...">
+            </div>
+
+            <div class="question-box">
+                <div class="question-text">5. What is the main message or theme of this passage?</div>
+                <textarea id="rc5" placeholder="Write your answer here..."></textarea>
+            </div>
+
+            <!-- Section B: Writing -->
+            <div class="section-title">Section B: Writing (Total: 16 Marks)</div>
+            <div class="question-box">
+                <div class="question-text">Choose ONE of the following writing tasks. Write about 150-200 words. Make sure your writing includes figurative language, appropriate connectives, and correct grammar and punctuation.</div>
+                <ol>
+                    <li>Write a persuasive speech on the importance of recycling.</li>
+                    <li>Write a monologue of a superhero preparing for their biggest battle.</li>
+                    <li>Write a narrative piece about a mysterious message found in a bottle.</li>
+                    <li>Write a descriptive piece titled: 'The Secret Garden'.</li>
+                </ol>
+                <textarea id="writing" style="min-height: 200px;" placeholder="Write your essay here (Min 100 words for points)..."></textarea>
+            </div>
+
+            <button type="button" class="btn-gold" onclick="submitExam()" style="font-size: 20px; padding: 15px; margin-top: 20px;">Submit Exam</button>
+        </form>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-screen">
+        <div class="header">
+            <img src="logo1.png" alt="J&S Logo">
+            <h1>Examination Results</h1>
+            <h2 id="result-name-display"></h2>
+        </div>
+        <div class="score-board" id="score-display"></div>
+        <div id="results-container"></div>
+        <button class="btn-gold" onclick="window.location.reload()" style="margin-top: 20px;">Logout / Restart</button>
+    </div>
+
+    <script>
+        // Anti-Cheat Measures
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if(e.key === 'F12' || 
+               (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+               (e.ctrlKey && e.key === 'u') ||
+               (e.ctrlKey && e.key === 'c')) {
+                e.preventDefault();
+                alert("Action not allowed during examination.");
+            }
+        });
+
+        let studentName = "";
+
+        function login() {
+            const name = document.getElementById('studentName').value.trim();
+            const pass = document.getElementById('studentPassword').value;
+
+            if (pass === "HJS2026" && name !== "") {
+                studentName = name;
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('exam-screen').style.display = 'block';
+                document.getElementById('display-student-name').innerText = "Student: " + studentName;
+                window.scrollTo(0, 0);
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        function normalizeText(text) {
+            return text.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"").replace(/\s+/g, " ").trim();
+        }
+
+        function submitExam() {
+            let score = 0;
+            let resultsHTML = `<h3>Detailed Review for ${studentName}</h3>`;
+
+            // Helper function to create result HTML
+            function addResult(qNum, questionText, userAns, correctAns, isCorrect, points) {
+                let statusClass = isCorrect ? 'correct' : 'incorrect';
+                let statusText = isCorrect ? `✅ Correct (+${points} Marks)` : `❌ Incorrect (0 Marks)`;
+                return `
+                    <div class="result-item ${statusClass}">
+                        <div class="result-q">${qNum}: ${questionText}</div>
+                        <div class="result-ans"><strong>Your Answer:</strong> ${userAns === "" ? "<i>No Answer</i>" : userAns}</div>
+                        ${!isCorrect ? `<div class="correct-ans"><strong>Correct Answer:</strong> ${correctAns}</div>` : ''}
+                        <div style="font-size:12px; margin-top:5px; color:#777;">${statusText}</div>
+                    </div>
+                `;
+            }
+
+            // --- Grammar Section (16 items x 4 marks = 64 marks) ---
+            let pts = 4;
+
+            let q1 = document.getElementById('q1').value;
+            let c1 = "after";
+            let correct1 = normalizeText(q1).includes(c1);
+            if(correct1) score += pts;
+            resultsHTML += addResult("Q1", "Time connectives", q1, "After", correct1, pts);
+
+            let q2a = document.getElementById('q2a').value;
+            let c2a = normalizeText(q2a) === "unkind";
+            if(c2a) score += pts;
+            resultsHTML += addResult("Q2a", "Prefix to 'kind'", q2a, "unkind", c2a, pts);
+
+            let q2b = document.getElementById('q2b').value;
+            let c2b = normalizeText(q2b) === "misbehave";
+            if(c2b) score += pts;
+            resultsHTML += addResult("Q2b", "Prefix to 'behave'", q2b, "misbehave", c2b, pts);
+
+            let q3 = document.getElementById('q3').value;
+            let c3 = normalizeText(q3) === "but";
+            if(c3) score += pts;
+            resultsHTML += addResult("Q3", "Identify the connectives", q3, "but", c3, pts);
+
+            let q4 = document.getElementById('q4').value;
+            let c4 = q4.includes(":");
+            if(c4) score += pts;
+            resultsHTML += addResult("Q4", "Insert a colon", q4, "She brought three things: a pencil, a notebook, and an eraser.", c4, pts);
+
+            let q5 = document.getElementById('q5').value;
+            let c5 = normalizeText(q5).includes("chef baked the cake");
+            if(c5) score += pts;
+            resultsHTML += addResult("Q5", "Change the voice", q5, "The chef baked the cake.", c5, pts);
+
+            let q6 = document.getElementById('q6').value;
+            let c6 = normalizeText(q6).includes("personification");
+            if(c6) score += pts;
+            resultsHTML += addResult("Q6", "Identify figurative language", q6, "Personification", c6, pts);
+
+            let q7 = document.getElementById('q7').value;
+            let c7 = /(who|which|that|whose|whom|where|when)/i.test(q7);
+            if(c7) score += pts;
+            resultsHTML += addResult("Q7", "Embedded clause", q7, "Sample: The book, which was on the table, is mine.", c7, pts);
+
+            let q8a = document.getElementById('q8a').value;
+            let c8a = normalizeText(q8a) === "bright";
+            if(c8a) score += pts;
+            resultsHTML += addResult("Q8a", "Word choice (adjective)", q8a, "bright", c8a, pts);
+
+            let q8b = document.getElementById('q8b').value;
+            let c8b = normalizeText(q8b) === "light" || normalizeText(q8b) === "lamp";
+            if(c8b) score += pts;
+            resultsHTML += addResult("Q8b", "Word choice (noun)", q8b, "light / lamp", c8b, pts);
+
+            let q9 = document.getElementById('q9').value;
+            let c9 = normalizeText(q9).includes("under the old wooden table");
+            if(c9) score += pts;
+            resultsHTML += addResult("Q9", "Prepositional phrase", q9, "under the old wooden table", c9, pts);
+
+            let q10 = document.getElementById('q10').value;
+            let c10 = /(angry|anger|rush|left|furious|violent)/i.test(q10);
+            if(c10) score += pts;
+            resultsHTML += addResult("Q10", "Contextual meaning of 'stormed'", q10, "Left angrily / rushed angrily", c10, pts);
+
+            let q11 = document.getElementById('q11').value;
+            let c11 = /(olfactory|smell)/i.test(q11);
+            if(c11) score += pts;
+            resultsHTML += addResult("Q11", "Type of imagery", q11, "Olfactory (sense of smell)", c11, pts);
+
+            let q12a = document.getElementById('q12a').value;
+            let c12a = normalizeText(q12a) === "hopeful" || normalizeText(q12a) === "hopeless";
+            if(c12a) score += pts;
+            resultsHTML += addResult("Q12a", "Suffix to 'hope'", q12a, "hopeful / hopeless", c12a, pts);
+
+            let q12b = document.getElementById('q12b').value;
+            let c12b = normalizeText(q12b) === "helpful" || normalizeText(q12b) === "helpless";
+            if(c12b) score += pts;
+            resultsHTML += addResult("Q12b", "Suffix to 'help'", q12b, "helpful / helpless", c12b, pts);
+
+            let q13 = document.getElementById('q13').value;
+            let c13 = normalizeText(q13) === "adverb";
+            if(c13) score += pts;
+            resultsHTML += addResult("Q13", "Word class of 'quickly'", q13, "Adverb", c13, pts);
+
+            // --- Reading Comprehension (5 items x 4 marks = 20 marks) ---
+            let rc1 = document.getElementById('rc1').value;
+            let c_rc1 = /(mountain|chilly|clouds|sun)/i.test(rc1) && rc1.length > 10;
+            if(c_rc1) score += pts;
+            resultsHTML += addResult("RC1", "Setting and description", rc1, "A mountain ridge at sunrise, described with a chilly breeze and a sea of clouds.", c_rc1, pts);
+
+            let rc2 = document.getElementById('rc2').value;
+            let c_rc2 = /(hard|tired|worthwhile|breathtaking|amazed|difficult)/i.test(rc2) && rc2.length > 10;
+            if(c_rc2) score += pts;
+            resultsHTML += addResult("RC2", "Infer Mia's feelings", rc2, "She felt it was difficult but rewarding and breathtaking.", c_rc2, pts);
+
+            let rc3 = document.getElementById('rc3').value;
+            let c_rc3 = /(memory|past|present|beginning|adventure)/i.test(rc3) && rc3.length > 10;
+            if(c_rc3) score += pts;
+            resultsHTML += addResult("RC3", "Symbolism of the compass", rc3, "It symbolizes a memory of the adventure and the connection between past and new beginnings.", c_rc3, pts);
+
+            let rc4 = document.getElementById('rc4').value;
+            let c_rc4 = normalizeText(rc4) === "peaks" || normalizeText(rc4) === "mountain ridge";
+            if(c_rc4) score += pts;
+            resultsHTML += addResult("RC4", "Word meaning 'view from a high place'", rc4, "peaks", c_rc4, pts);
+
+            let rc5 = document.getElementById('rc5').value;
+            let c_rc5 = /(nature|journey|learn|reward|hard work)/i.test(rc5) && rc5.length > 10;
+            if(c_rc5) score += pts;
+            resultsHTML += addResult("RC5", "Main message or theme", rc5, "Nature has a way of teaching us about life, and hard journeys are often rewarding.", c_rc5, pts);
+
+            // --- Writing Section (16 Marks) ---
+            let writing = document.getElementById('writing').value;
+            let wordCount = writing.trim() === "" ? 0 : writing.trim().split(/\s+/).length;
+            let writingPoints = 0;
+            let c_writing = false;
+
+            if (wordCount >= 100) {
+                writingPoints = 16; // Full marks for automated check
+                c_writing = true;
+            } else if (wordCount > 30) {
+                writingPoints = 8; // Partial marks
+                c_writing = false; // Will show as incomplete
+            }
+
+            score += writingPoints;
+            
+            let writingStatusText = wordCount >= 100 ? `✅ Excellent Length (+${writingPoints} Marks)` : `⚠️ Too Short (+${writingPoints} Marks)`;
+            resultsHTML += `
+                <div class="result-item ${c_writing ? 'correct' : 'incorrect'}">
+                    <div class="result-q">Writing Task: You wrote ${wordCount} words.</div>
+                    <div class="result-ans"><strong>Requirement:</strong> 100+ words for full automated marks. (Teacher will manually grade content quality).</div>
+                    <div style="font-size:12px; margin-top:5px; font-weight:bold;">${writingStatusText}</div>
+                </div>
+            `;
+
+            // Calculate final display
+            let totalPossible = 100;
+            
+            document.getElementById('result-name-display').innerText = "Student: " + studentName;
+            document.getElementById('score-display').innerHTML = `Final Score: ${score} / ${totalPossible} (${score}%)`;
+            document.getElementById('results-container').innerHTML = resultsHTML;
+
+            // Switch screens
+            document.getElementById('exam-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
